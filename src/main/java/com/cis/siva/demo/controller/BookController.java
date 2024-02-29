@@ -14,33 +14,48 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    // GET all books
-    @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
-    }
-
-    // GET a book by ID
     @GetMapping("/{bookId}")
-    public Book getBookById(@PathVariable Long bookId) {
-        return bookService.getBookById(bookId);
+    public Book getBook(@PathVariable Integer bookId) {
+
+        return bookService.getBook(bookId);
     }
 
-    // POST a new book
+    // create a book
     @PostMapping
     public Book createBook(@RequestBody Book book) {
+
         return bookService.createBook(book);
-    }
+//    @Autowired
+//    private BookService bookService;
+//
+//    // GET all books
+//    @GetMapping
+//        public List<Book> getAllBooks() {
+//        return bookService.getAllBooks();
+//    }
+//
+//    // GET a book by ID
+//    @GetMapping("/{bookId}")
+//    public Book getBookById(@PathVariable Long bookId) {
+//        return bookService.getBookById(bookId);
+//    }
+//
+//    // POST a new book
+//    @PostMapping
+//    public Book createBook(@RequestBody Book book) {
+//        return bookService.createBook(book);
+//    }
+//
+//    // PUT/update a book by ID
+//    @PutMapping("/{bookId}")
+//    public Book updateBook(@PathVariable Long bookId, @RequestBody Book book) {
+//        return bookService.updateBook(bookId, book);
+//    }
 
-    // PUT/update a book by ID
-    @PutMapping("/{bookId}")
-    public Book updateBook(@PathVariable Long bookId, @RequestBody Book book) {
-        return bookService.updateBook(bookId, book);
-    }
-
-    // DELETE a book by ID
-    @DeleteMapping("/{bookId}")
-    public void deleteBook(@PathVariable Long bookId) {
-        bookService.deleteBook(bookId);
+//    // DELETE a book by ID
+//    @DeleteMapping("/{bookId}")
+//    public void deleteBook(@PathVariable Long bookId) {
+//        bookService.deleteBook(bookId);
+//    }
     }
 }
