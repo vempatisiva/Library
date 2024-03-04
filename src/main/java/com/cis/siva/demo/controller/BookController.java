@@ -58,4 +58,16 @@ public class BookController {
 //        bookService.deleteBook(bookId);
 //    }
     }
+
+    @PutMapping
+    public Book updateBook(@RequestBody Book book){
+        // Set the memberId for the member object to be updated
+        return bookService.updateBook(book);
+    }
+
+    @DeleteMapping
+    public void deleteBook(Integer bookId){
+        bookService.deleteBook(bookId);
+    }
+
 }

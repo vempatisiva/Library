@@ -75,7 +75,54 @@ public class BookService {
         book.setBookIsbns(bookIsbnDTOS);
 
         return book;
-
-
     }
+
+    public Book updateBook(Book book) {
+        //Integer bookId = LibraryBook.getBookId();
+        //bookMap.put(bookId, book);
+        //return bookRepository.save(LibraryBook);
+
+        // Create a new LibraryBook object
+        LibraryBook libraryBook = new LibraryBook();
+
+        // Manually map properties from Book to LibraryBook
+        BeanUtils.copyProperties(book, libraryBook);
+
+        // Map BookIsbn objects from Book to LibraryBook
+        List<BookIsbn> bookIsbns = book.getBookIsbns().stream().map(bi -> {
+            BookIsbn bookIsbn = new BookIsbn();
+            BeanUtils.copyProperties(bi, bookIsbn);
+            bookIsbn.setLibraryBook(libraryBook); // Set LibraryBook reference for each BookIsbn
+            return bookIsbn;
+        }).collect(Collectors.toList());
+
+        // Set the BookIsbn list to the LibraryBook
+        libraryBook.setBookIsbns(bookIsbns);
+
+        // Save the LibraryBook to the database
+        LibraryBook savedLibraryBook = bookRepository.save(libraryBook);
+
+        // Create a new Book object to return
+        Book savedBook = new Book();
+
+        // Manually map properties from saved LibraryBook to Book
+        BeanUtils.copyProperties(savedLibraryBook, savedBook);
+
+        // Manually map BookIsbn objects from saved LibraryBook to Book
+        List<BookIsbnDTO> savedBookIsbns = savedLibraryBook.getBookIsbns().stream().map(savedBi -> {
+            BookIsbnDTO savedBiDto = new BookIsbnDTO();
+            BeanUtils.copyProperties(savedBi, savedBiDto);
+            return savedBiDto;
+        }).collect(Collectors.toList());
+
+        // Set the BookIsbnDTO list to the Book
+        savedBook.setBookIsbns(savedBookIsbns);
+
+        return savedBook;
+    }
+
+    public void deleteBook(Integer bookId) {
+        bookRepository.deleteById(bookId);
+    }
+
 }

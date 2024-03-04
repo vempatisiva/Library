@@ -1,10 +1,13 @@
 package com.cis.siva.demo.service;
 
+import com.cis.siva.demo.entity.Address;
+import com.cis.siva.demo.entity.Checkout;
 import com.cis.siva.demo.entity.LibraryMember;
 import com.cis.siva.demo.model.Member;
 import com.cis.siva.demo.model.AddressDTO;
 import com.cis.siva.demo.model.CheckoutDTO;
 import com.cis.siva.demo.repository.LIbraryMemberRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -64,12 +67,56 @@ public class MemberService {
     }
 
 
-    public LibraryMember updateMember(LibraryMember member) {
-        //Integer memberId = member.getMemberId();
-        //memberMap.put(memberId, LibraryMember);
-        return memberRepository.save(member);
+//    public LibraryMember updateMember(LibraryMember member) {
+//        //Integer memberId = member.getMemberId();
+//        //memberMap.put(memberId, LibraryMember);
+//        return memberRepository.save(member);
+//    }
+public Member updateMember(Member member) {
+    //Integer memberId = member.getMemberId();
+    //memberMap.put(memberId, LibraryMember);
+//        return memberRepository.save(member);
+
+    // Create a new LibraryMember object
+    LibraryMember libraryMember = new LibraryMember();
+
+    // Manually map properties from LibraryMemberDTO to LibraryMember
+    BeanUtils.copyProperties(member, libraryMember);
+
+    // If the address field is not null, map its properties to LibraryMember's Address
+    if (member.getAddress() != null) {
+        Address address = new Address();
+        BeanUtils.copyProperties(member.getAddress(), address);
+        libraryMember.setAddress(address);
     }
 
+    // If the checkouts field is not null, map its properties to LibraryMember's Checkouts
+    if (member.getCheckouts() != null) {
+        List<Checkout> checkouts = member.getCheckouts().stream().map(dto -> {
+            Checkout checkout = new Checkout();
+            BeanUtils.copyProperties(dto, checkout);
+            return checkout;
+        }).collect(Collectors.toList());
+        libraryMember.setCheckouts(checkouts);
+    }
+
+    // Save the LibraryMember to the database
+    LibraryMember savedLibraryMember = memberRepository.save(libraryMember);
+
+    // Create a new Member object to return
+    Member savedMember = new Member();
+
+    // Manually map properties from saved LibraryMember to Member
+    BeanUtils.copyProperties(savedLibraryMember, savedMember);
+
+    // Return the saved LibraryMember
+    return savedMember;
+
+}
+
+    public void deleteMember(Integer memberId) {
+        memberRepository.deleteById(memberId);
+    }
 }
 
 // relational databases ( SQL )
